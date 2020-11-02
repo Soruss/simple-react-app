@@ -15,28 +15,48 @@ async getData() {
   const response = await fetch(url);
   const data = await response.json();
   this.setState({person: data.results});
-  console.log(this.state.person);
+  // console.log(this.state.person);
 }
 
 componentDidMount() {
   this.getData();
 }
 
-
 changeResult = (val) => {
   // eslint-disable-next-line
   this.state.numResult = val;
   this.getData();
 }
+
+onChangeHandler = (event) => {
+  this.setState({numResult: event.target.value});
+  // console.log(this.state.numResult)
+}
+
+submitHandler = (event) => {
+  event.preventDefault();
+  this.getData();
+}
+
   render() {
     return (    
     <div className="App">
       <header className="App-header">
+        <div>
+          <h3>Generate Random Username & Password</h3>
+          <h5>via randomuser.me/api</h5>
+        </div>
+        
+      <form onSubmit={this.submitHandler}>
+        <input type="text" size="4" value={this.state.numResult} onChange={this.onChangeHandler}></input>
+        <input type="submit" value="Change Result"></input>
+      </form>
       <div className="btn-group">
         <button type='button' onClick={() => this.changeResult(5)}>5 results</button>
         <button type='button' onClick={() => this.changeResult(10)}>10 results</button>
         <button type='button' onClick={() => this.changeResult(20)}>20 results</button>
       </div>
+      <div style={{height:"500px",overflow: "auto", border: "5px"}}>
         {!this.state.person ? (<p>loading....</p>) : 
         (
           <table>
@@ -45,7 +65,7 @@ changeResult = (val) => {
             <th>Number</th>
             <th>Username</th>
             <th>Email</th>
-            <th>Gender</th>
+            <th>Password</th>
           </tr>
           {this.state.person.map( (person, index) => 
               (
@@ -53,7 +73,7 @@ changeResult = (val) => {
                 <td>{index + 1}</td>
                 <td>{person.login.username}</td>
                 <td>{person.email}</td>
-                <td>{person.gender}</td>
+                <td>{person.login.password}</td>
               </tr>
               )
             )
@@ -62,6 +82,7 @@ changeResult = (val) => {
         </table>
         )
       }
+      </div>
       </header>
     </div>
     );
